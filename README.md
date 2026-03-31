@@ -29,7 +29,7 @@ Add to your `opencode.json`:
 
 ```json
 {
-  "plugins": ["opencode-autobe"]
+  "plugins": ["@hacr/opencode-autobe"]
 }
 ```
 

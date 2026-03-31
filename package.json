@@ -1,5 +1,5 @@
 {
-  "name": "opencode-autobe",
+  "name": "@hacr/opencode-autobe",
   "version": "0.1.0",
   "description": "OpenCode plugin for AutoBE — AI-powered NestJS + Prisma backend generation",
   "type": "module",
