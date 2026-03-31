@@ -1,5 +1,9 @@
 # opencode-autobe
 
+<p align="center">
+  <img src="logo.svg" alt="opencode-autobe logo" width="160" height="160"/>
+</p>
+
 An [OpenCode](https://opencode.ai) plugin that integrates [AutoBE](https://autobe.dev) — the AI-powered NestJS + Prisma backend generator — directly into your OpenCode sessions.
 
 ## What it does
