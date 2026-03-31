@@ -4,26 +4,31 @@
   <img src="logo.svg" alt="opencode-autobe logo" width="160" height="160"/>
 </p>
 
-An [OpenCode](https://opencode.ai) plugin that integrates [AutoBE](https://autobe.dev) — the AI-powered NestJS + Prisma backend generator — directly into your OpenCode sessions.
+An [OpenCode](https://opencode.ai) plugin that integrates [AutoBE](https://autobe.dev) — the AI-powered NestJS + Prisma backend generator — directly into your OpenCode sessions. Runs entirely in-process. No playground server required.
 
 ## What it does
 
-Adds three tools to OpenCode:
+Adds the `autobe_generate` tool to OpenCode. Run the full AutoBE pipeline from a single natural-language description:
 
-| Tool | Description |
-|------|-------------|
-| `autobe_generate` | Generate a complete NestJS + Prisma backend from a natural-language description |
-| `autobe_list_sessions` | List recent AutoBE sessions on your playground server |
-| `autobe_get_files` | Retrieve generated files from a completed session and write them to your project |
+| Phase | Output |
+|-------|--------|
+| **Requirements analysis** | Structured specification |
+| **Database design** | Type-safe Prisma schema (ERD) |
+| **API design** | OpenAPI specification |
+| **Test generation** | E2E test suites |
+| **Code generation** | 100% TypeScript-compilable NestJS implementation |
+
+All files are written to your current project directory.
 
 ## Prerequisites
 
-1. **AutoBE playground server** — clone [autobe](https://github.com/samchon/autobe) and run the playground server
-2. **AI API key** — Anthropic, OpenAI, or any OpenAI-compatible provider
+- **AI API key** — Anthropic (recommended), OpenAI, or any OpenAI-compatible provider
+
+That's it. No server to start, no ports to configure.
 
 ## Installation
 
-### As an npm plugin (recommended)
+### Via npm (recommended)
 
 Add to your `opencode.json`:
 
@@ -39,35 +44,56 @@ Clone this repo and place the project in your working directory. OpenCode will a
 
 ## Configuration
 
-Set these environment variables before starting OpenCode:
+Set your AI API key:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `AUTOBE_SERVER_URL` | `http://localhost:3000` | AutoBE playground server URL |
-| `AUTOBE_API_KEY` | — | API key for the AI vendor (overrides other keys) |
-| `ANTHROPIC_API_KEY` | — | Anthropic API key (used if `AUTOBE_API_KEY` not set) |
-| `OPENAI_API_KEY` | — | OpenAI API key (used as last fallback) |
-| `AUTOBE_BASE_URL` | — | Custom base URL for OpenAI-compatible endpoints |
-| `AUTOBE_MODEL` | `claude-sonnet-4-20250514` | Default AI model |
-| `AUTOBE_VENDOR_ID` | — | Skip vendor creation, use this existing vendor ID |
+```bash
+# Anthropic (recommended - uses Claude Sonnet 4)
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# Or OpenAI
+export OPENAI_API_KEY=sk-...
+```
+
+Optional overrides:
+
+| Variable | Description |
+|----------|-------------|
+| `AUTOBE_API_KEY` | Generic API key (used if vendor-specific keys not set) |
+| `AUTOBE_MODEL` | Override default model (e.g., `claude-sonnet-4-20250514`, `gpt-4.1`) |
+| `AUTOBE_BASE_URL` | Custom endpoint for OpenAI-compatible providers |
 
 ## Usage
 
-Once configured, just describe your backend in natural language:
+Once configured, just describe your backend:
 
 ```
 Generate a backend for a blog platform with posts, comments, tags, and user auth
 ```
 
-OpenCode will call `autobe_generate` and run the full AutoBE pipeline:
+OpenCode runs `autobe_generate` and executes the full AutoBE pipeline in-process. Progress is streamed live:
 
-1. **Requirements analysis** — structures your description into a formal spec
-2. **Database design** — creates a type-safe Prisma schema
-3. **API design** — generates an OpenAPI specification
-4. **Test generation** — writes E2E test suites
-5. **Code generation** — produces compilable NestJS implementation
+```
+AutoBE: analysing requirements…
+AutoBE: ✓ requirements analysed
+AutoBE: designing database schema…
+AutoBE: ✓ database schema done
+AutoBE: designing API interface…
+AutoBE: ✓ API interface done
+AutoBE: writing E2E tests…
+AutoBE: ✓ E2E tests done
+AutoBE: generating implementation…
+AutoBE: ✓ implementation done!
+```
 
-All generated files are written to your current project directory.
+All generated files (Prisma schema, controllers, services, tests, etc.) are written to your project directory.
+
+## Architecture
+
+**Old:** Plugin → HTTP/WebSocket → Playground Server → AutoBE SDK → files
+
+**New:** Plugin → AutoBE SDK → files
+
+By embedding `@autobe/agent` and `@autobe/compiler` as dependencies, the pipeline runs directly in your OpenCode process. Zero configuration, zero latency, zero external services.
 
 ## AutoBE pipeline
 
@@ -79,27 +105,7 @@ Requirements → Prisma Schema → OpenAPI Spec → E2E Tests → NestJS Impleme
   Analyze         Database        Interface       Test           Realize
 ```
 
-Each phase validates against its compiler (Prisma → OpenAPI → TypeScript) before proceeding.
-
-## Starting the playground server
-
-```bash
-# Clone autobe
-git clone https://github.com/samchon/autobe
-cd autobe
-
-# Install dependencies
-pnpm install
-
-# Set up database
-cd apps/playground-server
-npx prisma db push
-
-# Start the server (default port from .env.local)
-pnpm exec ts-node src/executable/server.ts
-```
-
-Set `AUTOBE_SERVER_URL` to the server's address and port.
+Each phase validates against its compiler (Prisma → OpenAPI → TypeScript) before proceeding, ensuring 100% compilable output.
 
 ## License
 
