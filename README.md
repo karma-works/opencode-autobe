@@ -87,15 +87,7 @@ AutoBE: ✓ implementation done!
 
 All generated files (Prisma schema, controllers, services, tests, etc.) are written to your project directory.
 
-## Architecture
-
-**Old:** Plugin → HTTP/WebSocket → Playground Server → AutoBE SDK → files
-
-**New:** Plugin → AutoBE SDK → files
-
-By embedding `@autobe/agent` and `@autobe/compiler` as dependencies, the pipeline runs directly in your OpenCode process. Zero configuration, zero latency, zero external services.
-
-## AutoBE pipeline
+## How it works
 
 AutoBE uses a waterfall + spiral architecture with compiler-driven validation:
 
@@ -109,4 +101,4 @@ Each phase validates against its compiler (Prisma → OpenAPI → TypeScript) be
 
 ## License
 
-MIT
+This plugin is MIT licensed. Note that the underlying AutoBE SDK (`@autobe/agent` and `@autobe/compiler`) is licensed under AGPL-3.0.
