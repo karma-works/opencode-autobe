@@ -1,6 +1,6 @@
 {
   "name": "@hacr/opencode-autobe",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "OpenCode plugin for AutoBE — AI-powered NestJS + Prisma backend generation",
   "type": "module",
   "main": "index.ts",
