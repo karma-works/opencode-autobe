@@ -34,7 +34,8 @@ Add to your `opencode.json`:
 
 ```json
 {
-  "plugins": ["@hacr/opencode-autobe"]
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@hacr/opencode-autobe"]
 }
 ```
 
